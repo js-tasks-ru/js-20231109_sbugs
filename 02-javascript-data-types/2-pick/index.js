@@ -11,11 +11,5 @@ export const pick = (obj, ...fields) => {
             outObj[fields[itm]] = obj[fields[itm]];
         }
     }
-    /* можно так, но медленнее
-    for (const [key, value] of Object.entries(obj)) {
-        if(fields.includes(key)) {
-            outObj[key] = value;
-        }
-    }*/
     return outObj;
 };
