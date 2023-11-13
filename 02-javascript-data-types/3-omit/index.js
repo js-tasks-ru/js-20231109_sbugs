@@ -6,8 +6,9 @@
  */
 
 export const omit = (obj, ...fields) => {
+    const outObj = {...obj};
     for(let itm in fields) {
-        obj[fields[itm]] && delete obj[fields[itm]];
+        outObj[fields[itm]] && delete outObj[fields[itm]];
     }
-    return obj;
+    return outObj;
 };
