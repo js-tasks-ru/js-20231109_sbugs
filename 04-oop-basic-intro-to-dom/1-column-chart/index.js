@@ -9,12 +9,12 @@ export default class ColumnChart {
         this.renderTemplate();
     }
     renderTemplate() {
-        let element = document.createElement('div');
+        const element = document.createElement('div');
         element.insertAdjacentHTML('afterbegin', this.getTemplate() );
         this.element = element.firstElementChild;
 
     }
-    calculateCols() {
+    createColumnsTemplate() {
         const max = Math.max(...this.data);
         let rows = '';
         this.data.forEach((i) => {
@@ -24,7 +24,7 @@ export default class ColumnChart {
         return rows;
     }
     getTemplate() {
-        let skeleton = (!this.data.length) ? 'column-chart_loading' : '';
+        const skeleton = (!this.data.length) ? 'column-chart_loading' : '';
         return `
             <div class="column-chart ${skeleton}" style="--chart-height: 50">
                 <div class="column-chart__title">
@@ -32,7 +32,7 @@ export default class ColumnChart {
                 <div class="column-chart__container">
                   <div data-element="header" class="column-chart__header">${this.formatHeading(this.value)}</div>
                   <div data-element="body" class="column-chart__chart">
-                    ${this.calculateCols()}
+                    ${this.createColumnsTemplate()}
                   </div>
                 </div>
               </div>
@@ -45,10 +45,10 @@ export default class ColumnChart {
             this.element.classList.add('column-chart_loading');
         }
         this.data = data;
-        this.element.querySelector(".column-chart__chart").innerHTML = this.calculateCols(this.data);
+        this.element.querySelector(".column-chart__chart").innerHTML = this.createColumnsTemplate(this.data);
     }
     getLink() {
-        return (this.link) ? `<a href="${this.link}" class="column-chart__link">View all</a>` : '';
+        return this.link ? `<a href="${this.link}" class="column-chart__link">View all</a>` : '';
     }
     remove() {
         this.element.remove();
