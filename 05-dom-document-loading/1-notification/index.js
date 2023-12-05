@@ -1,8 +1,12 @@
 export default class NotificationMessage {
-    constructor(msg = "", data = {
-        duration: 10000,
-        type: "success",
-    }) {
+    constructor(
+        msg = "",
+        data = {
+            duration: 10000,
+            type: "success",
+        }
+    ) {
+        this.isActive = false;
         this.timerId = null;
         this.msg = msg;
         this.duration = data.duration;
@@ -14,21 +18,17 @@ export default class NotificationMessage {
         element.innerHTML = this.createTemplate();
         return element.firstElementChild;
     }
-
-    checkExistComponent() {
-        return !!document.querySelector(".notification");
-    }
     show(targetEl) {
-        if (this.checkExistComponent()) {
-            document.querySelector(".notification").remove();
-        }
+        this.isActive && this.remove();
         if (targetEl) {
             targetEl.append(this.element);
         } else {
             document.querySelector("body").append(this.element);
         }
+        this.isActive = true;
         this.timerId = setTimeout(() => {
             this.remove();
+            this.isActive = false;
         }, this.duration);
     }
     createTemplate() {
