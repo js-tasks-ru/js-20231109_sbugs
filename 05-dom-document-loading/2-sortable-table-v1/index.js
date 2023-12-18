@@ -35,6 +35,9 @@ export default class SortableTable {
             (itm) => `
             <div class="sortable-table__cell" data-id="${itm.id}" data-sortable="${itm.sortable}" data-order="">
                 <span>${itm.title}</span>
+                <span data-element="arrow" class="sortable-table__sort-arrow">
+                    <span class="sort-arrow"></span>
+                </span>
             </div>`
         );
         return `
@@ -48,6 +51,7 @@ export default class SortableTable {
             let headRows = this.headerConfig
                 .map((itm) => {
                     if (itm.id === "images") {
+                        //return `<div class="sortable-table__cell">img</div>`;//заглушка т.к. фото не грузятся
                         return `<div class="sortable-table__cell">
                                         <img class="sortable-table-image" alt="Image" src="${
                                             dataRow[itm.id][0].url
@@ -67,7 +71,7 @@ export default class SortableTable {
         });
         return rows.join("");
     }
-    sort(fieldValue, orderValue) {
+    sort(fieldValue, orderValue, isSortLocally = true) {
         const headConf = this.getHeaderConfig(fieldValue);
         headConf.sortType === "string"
             ? this.sortStrings(headConf.id, orderValue)
@@ -82,7 +86,13 @@ export default class SortableTable {
         this.subElements = this.getSubElements();
     }
     getSubElements() {
-        return { body: this.element.querySelector("[data-element=body]") };
+        return {
+            body: this.element.querySelector("[data-element=body]"),
+            header: this.element.querySelector(".sortable-table__header"),
+            headerCols: this.element.querySelectorAll(
+                ".sortable-table__cell[data-id]"
+            ),
+        };
     }
     getHeaderConfig(fieldValue) {
         return this.headerConfig.find((itm) => itm.id === fieldValue);
