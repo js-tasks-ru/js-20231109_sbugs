@@ -2,34 +2,42 @@ export default class SortableTable {
     constructor(headerConfig = [], data = []) {
         this.data = data;
         this.headerConfig = headerConfig;
-        this.element = this.createTableTemplate();
+        this.element = this.createProdContainerTemplate();
     }
-    createTableTemplate() {
+    createProdContainerTemplate() {
         const element = document.createElement("div");
         element.innerHTML = `
             <div data-element="productsContainer" class="products-list__container">
-                <div class="sortable-table">
-                    ${this.createTableHeaderTemplate()}
-                    <div data-element="body" class="sortable-table__body">
-                        ${this.createProductTemplate()}
-                    </div>
-                    <div data-element="loading" class="loading-line sortable-table__loading-line"></div>
-                    <div data-element="emptyPlaceholder" class="sortable-table__empty-placeholder">
-                      <div>
-                        <p>No products satisfies your filter criteria</p>
-                        <button type="button" class="button-primary-outline">Reset all filters</button>
-                      </div>
-                    </div>
-                </div>
+                ${this.createTableTemplate()}
             </div>
         `;
         return element.firstElementChild;
     }
+    createTableTemplate() {
+        return `
+            <div class="sortable-table">
+                ${this.createTableHeaderTemplate()}
+                <div data-element="body" class="sortable-table__body">
+                    ${this.createProductTemplate()}
+                </div>
+                <div data-element="loading" class="loading-line sortable-table__loading-line"></div>
+                <div data-element="emptyPlaceholder" class="sortable-table__empty-placeholder">
+                  <div>
+                    <p>No products satisfies your filter criteria</p>
+                    <button type="button" class="button-primary-outline">Reset all filters</button>
+                  </div>
+                </div>
+            </div>
+        `;
+    }
     createTableHeaderTemplate() {
-        let headers = this.headerConfig.map(
+        const headers = this.headerConfig.map(
             (itm) => `
             <div class="sortable-table__cell" data-id="${itm.id}" data-sortable="${itm.sortable}" data-order="">
                 <span>${itm.title}</span>
+                <span data-element="arrow" class="sortable-table__sort-arrow">
+                    <span class="sort-arrow"></span>
+                </span>
             </div>`
         );
         return `
@@ -40,9 +48,10 @@ export default class SortableTable {
     }
     createProductTemplate() {
         let rows = this.data.map((dataRow) => {
-            let rows1 = this.headerConfig
+            let headRows = this.headerConfig
                 .map((itm) => {
                     if (itm.id === "images") {
+                        //return `<div class="sortable-table__cell">img</div>`; //заглушка т.к. фото не грузятся
                         return `<div class="sortable-table__cell">
                                         <img class="sortable-table-image" alt="Image" src="${
                                             dataRow[itm.id][0].url
@@ -56,7 +65,7 @@ export default class SortableTable {
                 .join("");
             return `
                     <a href="/products/${dataRow.id}" class="sortable-table__row">
-                        ${rows1}
+                        ${headRows}
                     </a>
                 `;
         });
@@ -77,7 +86,13 @@ export default class SortableTable {
         this.subElements = this.getSubElements();
     }
     getSubElements() {
-        return { body: this.element.querySelector("[data-element=body]") };
+        const headEls = [];
+        const els = this.element.querySelectorAll("[data-element]");
+        for (const el of els) {
+            const name = el.dataset.element;
+            headEls[name] = el;
+        }
+        return headEls;
     }
     getHeaderConfig(fieldValue) {
         return this.headerConfig.find((itm) => itm.id === fieldValue);
