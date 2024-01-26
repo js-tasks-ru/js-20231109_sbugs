@@ -123,12 +123,12 @@ export default class DoubleSlider {
         return { from, to };
     }
     remove() {
-        document.removeEventListener("pointerdown", this.onPointerDown);
-        document.removeEventListener("pointerup", this.onPointerUp);
-        document.removeEventListener("pointermove", this.onPointerMove);
         this.element.remove();
     }
     destroy() {
+        document.removeEventListener("pointerdown", this.onPointerDown);
+        document.removeEventListener("pointerup", this.onPointerUp);
+        document.removeEventListener("pointermove", this.onPointerMove);
         this.remove();
     }
 }
