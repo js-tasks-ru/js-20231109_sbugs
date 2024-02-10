@@ -231,4 +231,6 @@ export default class SortableTable {
         this.removeSubElementsEvents();
         this.remove();
     }
+
 }
+
